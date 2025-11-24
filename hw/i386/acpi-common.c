@@ -94,9 +94,11 @@ build_xrupt_override(GArray *entry, uint8_t src, uint32_t gsi, uint16_t flags)
  */
 void acpi_build_madt(GArray *table_data, BIOSLinker *linker,
                      X86MachineState *x86ms,
-                     const char *oem_id, const char *oem_table_id)
+                     const char *oem_id, const char *oem_table_id,
+                     bool disable_last_cpu_entry)
 {
     int i;
+    int max_madt_cpu_entries;
     bool x2apic_mode = false;
     MachineClass *mc = MACHINE_GET_CLASS(x86ms);
     X86MachineClass *x86mc = X86_MACHINE_GET_CLASS(x86ms);
@@ -111,7 +113,10 @@ void acpi_build_madt(GArray *table_data, BIOSLinker *linker,
     build_append_int_noprefix(table_data,
                               x86ms->pic != ON_OFF_AUTO_OFF ? 1 : 0 , 4);
 
-    for (i = 0; i < apic_ids->len; i++) {
+    max_madt_cpu_entries = (disable_last_cpu_entry && apic_ids->len > 1) ?
+        apic_ids->len - 1 : apic_ids->len;
+
+    for (i = 0; i < max_madt_cpu_entries; i++) {
         pc_madt_cpu_entry(i, apic_ids, table_data, false);
         if (apic_ids->cpus[i].arch_id > 254) {
             x2apic_mode = true;

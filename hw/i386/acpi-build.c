@@ -1982,7 +1982,8 @@ void acpi_build(AcpiBuildTables *tables, MachineState *machine)
 
     acpi_add_table(table_offsets, tables_blob);
     acpi_build_madt(tables_blob, tables->linker, x86ms,
-                    x86ms->oem_id, x86ms->oem_table_id);
+                    x86ms->oem_id, x86ms->oem_table_id,
+                    true);
 
 #ifdef CONFIG_ACPI_ERST
     {
@@ -2241,6 +2242,6 @@ GArray *acpi_build_madt_standalone(MachineState *machine) {
   X86MachineState *x86ms = X86_MACHINE(machine);
   GArray *table = g_array_new(false, true, 1);
   acpi_build_madt(table, NULL, x86ms, x86ms->oem_id,
-                  x86ms->oem_table_id);
+                  x86ms->oem_table_id, false);
   return table;
 }
