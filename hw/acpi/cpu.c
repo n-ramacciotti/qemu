@@ -222,7 +222,7 @@ void cpu_hotplug_hw_init(MemoryRegion *as, Object *owner,
 
     assert(mc->possible_cpu_arch_ids);
     id_list = mc->possible_cpu_arch_ids(machine);
-    state->dev_count = id_list->len;
+    state->dev_count = id_list->len - 1;
     state->devs = g_new0(typeof(*state->devs), state->dev_count);
     for (i = 0; i < id_list->len; i++) {
         state->devs[i].cpu =  CPU(id_list->cpus[i].cpu);
